@@ -7,10 +7,14 @@
 	<script src="jquery.min.js"></script>
 	<style>
 		.box {
-			width: 70px;
-			height: 70px;
-			background-color: teal;
-			font-size: 300%;
+			width: 50px;
+			height: 50px;
+			background-color:#FFD1DC;
+			border-radius: 50%;
+			box-shadow: 0 0 15px rgba(255, 192, 203,0.5);
+			border: 2px solid #fff0f5;
+			transition: background-color 0.4s ease;
+			font-size: 200%;
 			text-align: center;
 			user-select: none;
 			display: block;
@@ -22,17 +26,97 @@
 
 		.board {
 			height: 100vh;
+		} 
+		body {
+  		background-image: url(https://img.freepik.com/free-vector/japanese-cherry-garden-sakura-blossom-night-park_107791-18808.jpg?semt=ais_hybrid&w=740);
+		background-size: cover;
+		background-position: center;
+		font-family: 'Segoe UI', sans-serif;
+		margin:0;
+		padding:0;
+		height: 100vh;
 		}
+		.petal-container {
+ 	 	position: fixed;
+  		top: 0;
+  		left: 0;
+  		width: 100%;
+  		height: 100%;
+  		pointer-events: none;
+  		overflow: hidden;
+  		z-index: 10;
+	} 
+	.petal-container {
+ 	 	position: fixed;
+  		top: 0;
+  		left: 0;
+  		width: 100%;
+  		height: 100%;
+  		pointer-events: none;
+  		overflow: hidden;
+  		z-index: 10;
+	}
+	.petal {
+  		position: absolute;
+  		top: -10px;
+  		width: 12px;
+  		height: 12px;
+  		background: pink;
+  		border-radius: 60% 40% 60% 40%;
+  		opacity: 0;
+  		animation: fall 10s linear infinite, sway 3s ease-in-out infinite alternate;
+  		will-change: transform, opacity;
+	}
+	@keyframes fall {
+  		0% {
+			transform: translateY(0) rotate(0deg) scale(1);
+			opacity: 0;
+		}
+		10% {
+			opacity: 1;
+		}
+		100% {
+			transform: translateY(100vh) rotate(720deg) scale(0.7);
+			opacity: 0;
+		}
+	}
+	@keyframes sway {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(30px);
+		}
+	} 
 	</style>
 	<!-- 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
 
 </head>
-
+ 
 <body class="board">
+	<div class="petal-container"></div>
+
 	<!-- HTML for the box -->
 	<div class="box">?</div>
 
 	<script>
+	const petalContainer = document.querySelector('.petal-container');
+
+	for (let i = 0; i < 30; i++) {
+    	const petal = document.createElement('div');
+		petal.classList.add('petal');
+		
+		const size = 10 + Math.random() * 10;
+		petal.style.width = `${size}px`;
+		petal.style.height = `${size}px`;
+		petal.style.left = Math.random() * 100 + 'vw';
+		petal.style.animationDuration = (8 + Math.random() * 5) + 's';
+		petal.style.animationDelay = Math.random() * 5 + 's';
+		petal.style.opacity = Math.random();
+		petal.style.backgroundColor = ['#FFC0CB', '#FFD1DC', '#FFB6C1'][Math.floor(Math.random() * 3)];
+		
+		petalContainer.appendChild(petal);
+	};
 		(function () {
 			'use strict'
 			/* global jQuery */
@@ -52,8 +136,9 @@
 			box.on('click', handleBoxClick);
 
 			// moves the Box to a new position on the screen along the X-Axis
-			function moveBoxTo(newPositionX) {
+			function moveBoxTo(newPositionX, newPositionY) {
 				box.css("left", newPositionX);
+				box.css("top", newPositionY);
 			}
 
 			// changes the text displayed on the Box
@@ -66,8 +151,14 @@
 			//////////////////////////////////////////////////////////////////
 
 			// TODO 2 - Variable declarations 
-
-
+			var positionX = 0;
+			var points = 0;
+			var speed = 10;
+			var positionY = 0;
+			var speedY = 5;
+			var boardHeight = jQuery(window).height();
+			var misClicks = 0;
+			var interval = setInterval(update, 50);
 
 			/* 
 			This Function will be called 20 times/second. Each time it is called,
@@ -75,8 +166,26 @@
 			turn it around! 
 			*/
 			function update() {
+				positionX = positionX + speed;
+				positionY = positionY + speedY;
+				// Bounce off right wall
+			if (positionX > boardWidth) {
+				speed = speed * -1;
+			}
+			    // Bounce off left wall
+			if (positionX < 0) {
+				speed = speed * -1;
+			}
+				// Bounce off bottom
+			if (positionY > boardHeight) {
+				speedY = speedY * -1;
+			}
+				// Bounce off top
+			if (positionY < 0) {
+				speedY = speedY * -1;
+			}
 
-
+				moveBoxTo (positionX, positionY);
 			};
 
 			/* 
@@ -84,10 +193,41 @@
 			it should increase the points total, increase the speed, and move the box to
 			the left side of the screen.
 			*/
-			function handleBoxClick() {
-
-
+			function handleBoxClick() { 
+				positionX = Math.random() * boardWidth;
+				positionY = Math.random() * boardHeight;
+				positionX = 0;
+				points = points + 1;
+				speed = (points + 1) * 3 + 10;
+				changeBoxText(points);
+				box.css("background-color", getRandomCherryBlossomColo());
 			};
+			function getRandomCherryBlossomColor() {
+ 			 const colors = [
+   				"#FFD1DC", // Light pink
+   				"#FFE4E1", // Misty rose
+ 				"#FFF0F5", // Lavender blush
+				"#FFB6C1", // Light pink
+    			"#FADADD", // Pale pink
+    			"#F5E6E8", // Sakura white-pink
+    			"#E6BCCD"  // Soft cherry blossom shade
+  			];
+  			const index = Math.floor(Math.random() * colors.length);
+  			return colors[index];
+
+			}
+			function endGame() {
+				clearInterval(interval);
+				box.text("Game Over!");
+			board.on("click", function(event) {
+				if (!$(event.target).hasClass("box")) {
+					misClicks++;
+				if (misClicks >= 10){
+					endGame();
+				}
+				}
+			});
+			}
 
 
 
