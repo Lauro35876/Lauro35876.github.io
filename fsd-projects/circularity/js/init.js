@@ -1,3 +1,5 @@
+var numCircles = 10000;
+
 var init = function (window) {
     'use strict';
     var 
@@ -20,18 +22,28 @@ var init = function (window) {
         ///////////////////
         
         // TODO 1 : Declare and initialize our variables
+        var circle;
+        var circles = [];
 
 
 
         // TODO 2 : Create a function that draws a circle 
-        
+        function drawCircle() {
+            circle = draw.randomCircleInArea(canvas, true, true, "#999", 2);
+            physikz.addRandomVelocity(circle, canvas, 5, 5);
+            view.addChild(circle);
+            circles.push(circle);
+        }
 
 
         // TODO 3 : Call the drawCircle() function
-
-
+        
+        
 
         // TODO 7 : Use a loop to create multiple circles
+        for (var i = 0; i < 100; i++) {
+            drawCircle();
+        }
 
 
 
@@ -47,11 +59,12 @@ var init = function (window) {
         */
         function update() {
             // TODO 4 : Update the position of each circle using physikz.updatePosition()
-
-            
+            for(var i = 0; i < circles.length; i++) {
+                physikz.updatePosition(circles[i]) 
+                game.checkCirclePosition(circles[0]); 
+            }
             // TODO 5 : Call game.checkCirclePosition() on your circles
-           
-
+            
             // TODO 8 / TODO 9 : Iterate over the array
            
             
@@ -68,6 +81,16 @@ var init = function (window) {
             if ( circle.x > canvas.width ) {
                 circle.x = 0;
             }
+            if (circle.x < 0) {
+                circle.x = canvas.width;
+            }
+            if (circle.y > canvas.height ) {
+                circle.y = 0;
+            }
+            if (circle.y < 0 ) {
+                circle.y = canvas.height
+            }
+
             
             // TODO 6 : YOUR CODE STARTS HERE //////////////////////
             
