@@ -1,4 +1,3 @@
-var numCircles = 10000;
 
 var init = function (window) {
     'use strict';
@@ -41,7 +40,7 @@ var init = function (window) {
         
 
         // TODO 7 : Use a loop to create multiple circles
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < 500; i++) {
             drawCircle();
         }
 
@@ -61,7 +60,7 @@ var init = function (window) {
             // TODO 4 : Update the position of each circle using physikz.updatePosition()
             for(var i = 0; i < circles.length; i++) {
                 physikz.updatePosition(circles[i]) 
-                game.checkCirclePosition(circles[0]); 
+                game.checkCirclePosition(circles[i]); 
             }
             // TODO 5 : Call game.checkCirclePosition() on your circles
             
